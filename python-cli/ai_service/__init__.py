@@ -1,43 +1,60 @@
 import os
 import json
+import time
 import google.generativeai as genai
 
-def get_ai_assessment(readme_content: str, repo_name: str):
-    """Sends README content to Gemini for assessment."""
+def _generate_with_retry(model, prompt, max_retries=4):
+    """Executes Gemini generation with backoff for rate limits."""
+    for attempt in range(max_retries):
+        try:
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            if "429" in str(e) or "quota" in str(e).lower():
+                if attempt < max_retries - 1:
+                    # Look for "Please retry in X" in the error to wait exactly that long if available
+                    wait_time = 15  # Default wait for RPM limit
+                    import re
+                    match = re.search(r"retry in ([\d\.]+)s", str(e))
+                    if match:
+                        wait_time = float(match.group(1)) + 1
+                    
+                    print(f"    [Rate Limit Hit] Waiting {wait_time:.1f}s before retry {attempt+1}/{max_retries}...")
+                    time.sleep(wait_time)
+                    continue
+            raise e
+
+def evaluate_all_repos_at_once(repo_contents: dict) -> dict:
     api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise ValueError("GEMINI_API_KEY is not set in the environment.")
-        
+    if not api_key: raise ValueError("GEMINI_API_KEY is not set.")
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-2.5-flash')
 
+    repo_text = ""
+    for name, content in repo_contents.items():
+        repo_text += f"\n\n--- REPOSITORY: {name} ---\n"
+        repo_text += content[:2500]  # truncate to avoid token blows
+
     prompt = f"""
-        You are an expert technical recruiter assessing a candidate's GitHub project.
-        Below is the content of the README.md file for the repository "{repo_name}".
+        You are an expert technical recruiter assessing a candidate's GitHub profile.
+        Below are the README contents of up to 5 repositories from this developer.
         
-        Analyze the project and provide a JSON object with three keys:
-        1. "level": (A string that must be one of: "Basic", "Intermediate", or "Advanced")
-        2. "assessment": (A string containing a 1-3 line summary of the project, its complexity, clarity, and the experience it reflects based ONLY on the README.)
-        3. "repoName": (A string with the repository name: "{repo_name}")
+        Analyze the projects and provide a JSON object with:
+        1. "results": An array of objects for each repository, each containing:
+           - "repoName": The exact name of the repository.
+           - "level": A string (Basic, Intermediate, or Advanced).
+           - "assessment": A 1-2 line summary.
+        2. "summary": A 1-paragraph summary of the developer's overall strengths and experience based on all provided projects.
 
-        Your entire response must be ONLY the raw JSON object, with no extra text, explanations, or markdown formatting.
+        Respond ONLY with the raw JSON object, no markdown formatting.
 
-        README CONTENT:
-        ----------------
-        {readme_content[:4000]}
+        REPOSITORIES TO EVALUATE:
+        {repo_text}
     """
-
     try:
-        response = model.generate_content(prompt)
-        ai_response = response.text
-        
-        # Clean the response to ensure it's a valid JSON string
+        ai_response = _generate_with_retry(model, prompt)
         clean_response = ai_response.strip().replace("```json", "").replace("```", "").strip()
         parsed_json = json.loads(clean_response)
-
-        return parsed_json.get("level", "Unknown"), parsed_json.get("assessment", "Failed to parse AI response.")
-
-    except (json.JSONDecodeError, AttributeError) as e:
-        return "Error", f"AI response parsing failed: {str(e)}. Raw response: {ai_response}"
+        return parsed_json
     except Exception as e:
-        return "Error", f"AI evaluation failed: {str(e)}"
+        return {"results": [], "summary": f"Failed to generate holistic summary due to AI evaluation error: {str(e)}"}
