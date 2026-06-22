@@ -9,12 +9,12 @@ Designed natively for high performance, featuring **Batched LLM Prompting**, **I
 ## 🌟 Key Architectural Features
 
 1. **Batched "One-Shot" AI Processing**: 
-   Instead of looping API requests (which quickly exhausts free-tier AI quotas and throttles networks), the app dynamically aggregates all repository data into a single, massive context window. This evaluates 5 repos + generates a holistic developer summary in <3 seconds.
+   Instead of looping API requests (which quickly exhausts free-tier AI quotas and throttles networks), the app dynamically aggregates ALL public repositories (with smart batching to avoid token limits), processes them in parallel groups, and generates a holistic developer summary. This approach is fast, scalable, and completely eliminates redundant API calls.
 2. **Resilient Rate-Limiting & Retries**: 
    Intercepts HTTP 429 Quota Exhaustion codes directly from the Google API, autonomously parsing the `Retry-After` metrics, pausing execution gracefully, and resuming without crashing.
-3. **Multi-layer Caching Strategy**: 
-   - *Web App*: Employs an ultra-fast Next.js Server-Side `Map()` Cache. Subsequent queries to the same username render instantaneously with a `Cache Hit` UI validation payload.
-   - *Python CLI*: Persists successful generation payloads to a local `.profile_cache.json` system, bypassing web dependency entirely on repeated lookups.
+3. **Multi-layer Caching Strategy with Expiration**: 
+   - *Web App*: Employs an in-memory cache in the Python backend that auto-expires after 1 hour.
+   - *Python CLI*: Persists successful generation payloads to a local `.profile_cache.json` with timestamp validation, ensuring cache freshness while eliminating redundant AI calls.
 4. **Adaptive UI Fallbacks**:
    Safely handles AI hallucinations. If the LLM omits a JSON property, the responsive Next.js Glassmorphism UI elegantly falls back without crashing the React virtual DOM.
 
@@ -40,13 +40,17 @@ Includes gorgeous slide-in animations, dynamic SVGs, and real-time scanning load
 
 ## ⚙️ Python CLI (`/python-cli`)
 
-A modular, lightweight python application structured for direct terminal injection.
+A modular, lightweight Python application structured for direct terminal injection.
+Both the Web App and CLI share the same core logic in `src/ai_core.py`.
 
-### 🛠️ Setup & Run
-1. Navigate to the directory: `cd python-cli`
-2. Ensure you have your `venv` active and dependencies installed:
+### 🛠️ Setup & Run (with Poetry)
+1. Install Poetry if you haven't already:
    ```bash
-   pip install -r requirements.txt
+   pip install poetry
+   ```
+2. Install project dependencies:
+   ```bash
+   poetry install
    ```
 3. Configure your Environment Variables in `python-cli/.env`:
    ```env
@@ -55,7 +59,12 @@ A modular, lightweight python application structured for direct terminal injecti
    ```
 4. Run the script against any username:
    ```bash
-   python main.py torvalds
+   poetry run python python-cli/main.py torvalds
+   ```
+   Or activate the Poetry shell:
+   ```bash
+   poetry shell
+   python python-cli/main.py torvalds
    ```
 
 ---
