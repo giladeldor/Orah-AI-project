@@ -125,7 +125,7 @@ export default function Home() {
                   return (
                     <div 
                       key={i} 
-                      className="group flex flex-col justify-between border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 bg-white dark:bg-zinc-900 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300"
+                      className="group relative flex flex-col justify-between border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 bg-white dark:bg-zinc-900 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 transition-all duration-300"
                     >
                       <div>
                         <div className="flex items-start justify-between mb-4">
@@ -139,6 +139,12 @@ export default function Home() {
                         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6 line-clamp-3 leading-relaxed">
                           {repo.assessment}
                         </p>
+
+                        <div className="hidden group-hover:block absolute left-4 right-4 top-16 z-20 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white/95 dark:bg-zinc-900/95 p-4 shadow-xl backdrop-blur-sm">
+                          <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-wrap">
+                            {repo.assessment}
+                          </p>
+                        </div>
                       </div>
                       
                       <div className="flex items-center">
