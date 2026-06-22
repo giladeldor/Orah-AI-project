@@ -1,0 +1,15 @@
+2026-06-22 09:42:48,927 - INFO - Starting review for 'theprimeagen'
+2026-06-22 09:42:48,928 - ERROR - GEMINI_API_KEY is missing from environment
+2026-06-22 09:43:05,700 - INFO - Starting review for 'theprimeagen'
+2026-06-22 09:43:05,701 - INFO - Fetching GitHub public repositories...
+2026-06-22 09:43:06,925 - INFO - Fetched README for jarl
+2026-06-22 09:43:07,664 - INFO - Fetched README for 99
+2026-06-22 09:43:08,718 - INFO - Fetched README for git-worktree.nvim
+2026-06-22 09:43:09,607 - INFO - Fetched README for refactoring.nvim
+2026-06-22 09:43:10,350 - INFO - Fetched README for harpoon
+2026-06-22 09:43:10,351 - INFO - Building batched prompt and sending to Gemini API...
+2026-06-22 09:43:29,987 - WARNING - [429 Rate Limit Hit] Waiting 31.6s before retry 1/5...
+2026-06-22 09:44:01,691 - WARNING - [429 Rate Limit Hit] Waiting 59.9s before retry 2/5...
+2026-06-22 09:45:13,124 - INFO - Successfully generated AI review payload.
+2026-06-22 09:45:16,461 - INFO - Starting review for 'theprimeagen'
+2026-06-22 09:45:16,488 - INFO - Cache hit for user: theprimeagen

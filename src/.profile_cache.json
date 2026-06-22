@@ -1,0 +1,41 @@
+{
+  "theprimeagen": {
+    "timestamp": 1782110713.1247828,
+    "data": {
+      "results": [
+        {
+          "repoName": "jarl",
+          "repoUrl": "https://github.com/ThePrimeagen/jarl",
+          "level": "Intermediate",
+          "assessment": "This project implements a functional-style error handling library in TypeScript, demonstrating proficiency with Promises, async/await, and designing reusable utility functions for robust error management."
+        },
+        {
+          "repoName": "99",
+          "repoUrl": "https://github.com/ThePrimeagen/99",
+          "level": "Advanced",
+          "assessment": "An ambitious Neovim AI client exploring agentic workflows and LLM integration to augment programmers, showcasing expertise in cutting-edge AI, editor plugin development, and complex system design."
+        },
+        {
+          "repoName": "git-worktree.nvim",
+          "repoUrl": "https://github.com/ThePrimeagen/git-worktree.nvim",
+          "level": "Intermediate",
+          "assessment": "A practical Neovim plugin wrapping Git worktree operations, demonstrating solid Neovim plugin development skills, Git CLI interaction, and attention to user experience and debugging."
+        },
+        {
+          "repoName": "refactoring.nvim",
+          "repoUrl": "https://github.com/ThePrimeagen/refactoring.nvim",
+          "level": "Advanced",
+          "assessment": "A sophisticated Neovim plugin for code refactoring and debugging, leveraging deep integration with LSP and Tree-sitter to provide IDE-level features, indicating advanced understanding of language parsers and editor internals."
+        },
+        {
+          "repoName": "harpoon",
+          "repoUrl": "https://github.com/ThePrimeagen/harpoon",
+          "level": "Intermediate",
+          "assessment": "A Neovim plugin focused on developer productivity, offering quick file navigation and persistent terminal management, showcasing practical plugin development and UX design within the editor environment."
+        }
+      ],
+      "holisticSummary": "This developer consistently delivers advanced and intermediate-level projects with a strong focus on developer tooling and productivity, particularly within the Neovim ecosystem. Their work demonstrates expertise in Neovim plugin development using Lua, deep understanding of editor integration points like LSP and Tree-sitter for complex code manipulation, and a keen interest in exploring cutting-edge technologies like AI/LLMs for agentic programming. Beyond editor extensions, the developer also exhibits solid software engineering principles through the creation of reusable libraries in TypeScript, emphasizing robust error handling and modular design. Overall, the profile indicates a highly skilled and versatile engineer capable of building sophisticated systems and developer-centric solutions.",
+      "cached": false
+    }
+  }
+}
