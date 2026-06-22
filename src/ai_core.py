@@ -5,7 +5,6 @@ import base64
 import logging
 import requests
 import warnings
-from datetime import datetime
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -36,6 +35,92 @@ logger.addHandler(stream_handler)
 
 CACHE_FILE = os.path.join(os.path.dirname(__file__), ".profile_cache.json")
 CACHE_EXPIRATION_SECONDS = 3600  # 1 hour
+
+def _fetch_all_public_repos(username: str, headers: dict):
+    repos = []
+    page = 1
+    while True:
+        url = f"https://api.github.com/users/{username}/repos?type=public&sort=updated&per_page=100&page={page}"
+        resp = requests.get(url, headers=headers)
+        if resp.status_code == 404:
+            raise ValueError(f"GitHub user '{username}' not found.")
+        resp.raise_for_status()
+        page_items = resp.json()
+        if not page_items:
+            break
+        repos.extend(page_items)
+        if len(page_items) < 100:
+            break
+        page += 1
+    return repos
+
+def _build_batch_prompt(repo_batch):
+    repo_text = ""
+    for repo in repo_batch:
+        repo_text += f"\n\n--- REPOSITORY: {repo['name']} ---\n{repo['readme'][:2500]}"
+
+    return f"""
+        You are an expert technical recruiter assessing a candidate's GitHub profile.
+        Below are README contents for a subset of this developer's public repositories.
+
+        Analyze the projects and provide a JSON object with ONLY one key:
+        1. "results": An array of objects for each repository, each containing:
+           - "repoName": The exact name of the repository.
+           - "level": A string (Basic, Intermediate, or Advanced).
+           - "assessment": A 1-2 line summary.
+
+        Respond ONLY with the raw JSON object, no markdown formatting.
+
+        REPOSITORIES TO EVALUATE:
+        {repo_text}
+    """
+
+def _analyze_repositories_in_batches(model, repo_readmes):
+    all_results = []
+    current_batch = []
+    current_chars = 0
+    max_batch_chars = 22000
+
+    for repo in repo_readmes:
+        item_chars = len(repo["readme"])
+        if current_batch and (current_chars + item_chars > max_batch_chars):
+            prompt = _build_batch_prompt(current_batch)
+            ai_response = _generate_with_retry(model, prompt)
+            clean_response = ai_response.strip().replace("```json", "").replace("```", "").strip()
+            parsed = json.loads(clean_response)
+            all_results.extend(parsed.get("results", []))
+            current_batch = []
+            current_chars = 0
+
+        current_batch.append(repo)
+        current_chars += item_chars
+
+    if current_batch:
+        prompt = _build_batch_prompt(current_batch)
+        ai_response = _generate_with_retry(model, prompt)
+        clean_response = ai_response.strip().replace("```json", "").replace("```", "").strip()
+        parsed = json.loads(clean_response)
+        all_results.extend(parsed.get("results", []))
+
+    return all_results
+
+def _generate_holistic_summary(model, repo_results):
+    compact = []
+    for r in repo_results:
+        compact.append({
+            "repoName": r.get("repoName", "Unknown"),
+            "level": r.get("level", "Unknown"),
+            "assessment": r.get("assessment", "")
+        })
+
+    prompt = f"""
+        Based on the following repository assessments for a developer:
+        {json.dumps(compact, indent=2)[:50000]}
+
+        Provide one concise paragraph summarizing overall strengths, experience level, and capabilities.
+        Respond with plain text only.
+    """
+    return _generate_with_retry(model, prompt).strip()
 
 def get_cached_result(username):
     if not os.path.exists(CACHE_FILE):
@@ -111,19 +196,14 @@ def evaluate_profile(username: str):
 
     # 3. Fetch Repos
     logger.info("Fetching GitHub public repositories...")
-    url = f"https://api.github.com/users/{username}/repos?type=public&sort=updated&per_page=5"
-    resp = requests.get(url, headers=headers)
-    if resp.status_code == 404:
-        raise ValueError(f"GitHub user '{username}' not found.")
-    resp.raise_for_status()
-    repos = resp.json()
+    repos = _fetch_all_public_repos(username, headers)
 
     if not repos:
         raise ValueError("No public repositories found.")
 
     # 4. Fetch READMEs
-    repo_text = ""
     original_repos = []
+    repo_readmes = []
     
     for repo in repos:
         repo_name = repo["name"]
@@ -135,44 +215,25 @@ def evaluate_profile(username: str):
         if rm_resp.status_code == 200:
             content_b64 = rm_resp.json().get("content", "")
             content = base64.b64decode(content_b64).decode("utf-8")
-            repo_text += f"\n\n--- REPOSITORY: {repo_name} ---\n{content[:2500]}"
+            repo_readmes.append({"name": repo_name, "readme": content})
             logger.info(f"Fetched README for {repo_name}")
         else:
             logger.warning(f"No README found for {repo_name}")
 
-    if not repo_text:
+    if not repo_readmes:
         raise ValueError("No READMEs found in any repository to analyze.")
 
-    # 5. Execute AI Batch Prompt
-    logger.info("Building batched prompt and sending to Gemini API...")
-    prompt = f"""
-        You are an expert technical recruiter assessing a candidate's GitHub profile.
-        Below are the README contents of up to 5 repositories from this developer.
-        
-        Analyze the projects and provide a JSON object with:
-        1. "results": An array of objects for each repository, each containing:
-           - "repoName": The exact name of the repository.
-           - "level": A string (Basic, Intermediate, or Advanced).
-           - "assessment": A 1-2 line summary.
-        2. "summary": A 1-paragraph summary of the developer's overall strengths and experience based on all provided projects.
-
-        Respond ONLY with the raw JSON object, no markdown formatting.
-
-        REPOSITORIES TO EVALUATE:
-        {repo_text}
-    """
-    
+    # 5. Execute AI analysis in batches so all repos can be included safely
+    logger.info("Analyzing repository READMEs in batches...")
     try:
-        ai_response = _generate_with_retry(model, prompt)
-        clean_response = ai_response.strip().replace("```json", "").replace("```", "").strip()
-        parsed_json = json.loads(clean_response)
+        ai_results = _analyze_repositories_in_batches(model, repo_readmes)
+        holistic_summary = _generate_holistic_summary(model, ai_results)
     except Exception as e:
         logger.error(f"AI evaluation failed: {e}")
         raise ValueError(f"AI evaluation failed: {e}")
 
     # 6. Map results
     final_results = []
-    ai_results = parsed_json.get("results", [])
     
     for obj in original_repos:
         match = next((r for r in ai_results if r.get("repoName") == obj["name"]), None)
@@ -185,7 +246,7 @@ def evaluate_profile(username: str):
 
     payload = {
         "results": final_results,
-        "holisticSummary": parsed_json.get("summary", "No summary generated."),
+        "holisticSummary": holistic_summary or "No summary generated.",
         "cached": False
     }
 
