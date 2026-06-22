@@ -16,7 +16,13 @@ build/
 .env*.local
 npm-debug.log*
 
+
 # OS / Editor
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Runtime artifacts
+src/*.log
+src/.profile_cache.json
+python-cli/.profile_cache.json

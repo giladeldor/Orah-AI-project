@@ -37,5 +37,83 @@
       "holisticSummary": "This developer consistently delivers advanced and intermediate-level projects with a strong focus on developer tooling and productivity, particularly within the Neovim ecosystem. Their work demonstrates expertise in Neovim plugin development using Lua, deep understanding of editor integration points like LSP and Tree-sitter for complex code manipulation, and a keen interest in exploring cutting-edge technologies like AI/LLMs for agentic programming. Beyond editor extensions, the developer also exhibits solid software engineering principles through the creation of reusable libraries in TypeScript, emphasizing robust error handling and modular design. Overall, the profile indicates a highly skilled and versatile engineer capable of building sophisticated systems and developer-centric solutions.",
       "cached": false
     }
+  },
+  "giladeldor": {
+    "timestamp": 1782110802.9051418,
+    "data": {
+      "results": [
+        {
+          "repoName": "Orah-AI-project",
+          "repoUrl": "https://github.com/giladeldor/Orah-AI-project",
+          "level": "Advanced",
+          "assessment": "This project showcases advanced skills in AI integration, robust API management (rate-limiting, caching), and building high-performance, resilient applications with a dual web/CLI interface using Next.js, Python, and Google Gemini."
+        },
+        {
+          "repoName": "web-app",
+          "repoUrl": "https://github.com/giladeldor/web-app",
+          "level": "Basic",
+          "assessment": "This repository contains the default README for a bootstrapped Next.js project, demonstrating only the initial setup without any custom features or advanced implementations."
+        },
+        {
+          "repoName": "resume-job-match-agent",
+          "repoUrl": "https://github.com/giladeldor/resume-job-match-agent",
+          "level": "Advanced",
+          "assessment": "This project demonstrates advanced Python backend development with FastAPI, a sophisticated multi-agent AI architecture for complex NLP tasks, robust document parsing, and versatile LLM integration, packaged with a simple frontend."
+        },
+        {
+          "repoName": "CourtCraft",
+          "repoUrl": "https://github.com/giladeldor/CourtCraft",
+          "level": "Intermediate",
+          "assessment": "A well-structured full-stack Flask application demonstrating proficiency in Python, web development (Flask, Jinja2, Bootstrap), database management (SQLite), and data processing with pandas for a complex domain-specific calculator."
+        },
+        {
+          "repoName": "war-room-game",
+          "repoUrl": "https://github.com/giladeldor/war-room-game",
+          "level": "Intermediate",
+          "assessment": "This project highlights strong full-stack development skills using React 19/TypeScript for an interactive frontend and Node.js/Express with Groq API integration for dynamic AI-driven narrative generation in a creative game context."
+        }
+      ],
+      "holisticSummary": "This developer demonstrates a robust and diverse skill set, particularly excelling in AI-powered application development. Projects like \"Orah-AI-project\" and \"resume-job-match-agent\" showcase an advanced understanding of LLM integration, multi-agent architectures, complex API handling (rate-limiting, caching), and robust backend engineering with Python/FastAPI and Next.js. The \"war-room-game\" further solidifies their full-stack capabilities with modern React/TypeScript and Node.js/Express, combined with creative AI narrative generation. \"CourtCraft\" adds to this, illustrating solid full-stack Flask development with data processing and user management. While one entry appears to be a basic boilerplate, the comprehensive nature of the other projects indicates a developer capable of building sophisticated, well-architected, and resilient applications across different tech stacks (Python, JavaScript/TypeScript) and AI platforms (Google Gemini, OpenAI, Groq), with a strong grasp of both frontend and backend development.",
+      "cached": false
+    }
+  },
+  "torvalds": {
+    "timestamp": 1782110860.3860126,
+    "data": {
+      "results": [
+        {
+          "repoName": "linux",
+          "repoUrl": "https://github.com/torvalds/linux",
+          "level": "Advanced",
+          "assessment": "This repository hosts the official Linux kernel documentation and source, signifying a foundational and leading role in operating system development and showcasing unparalleled systems programming expertise."
+        },
+        {
+          "repoName": "GuitarPedal",
+          "repoUrl": "https://github.com/torvalds/GuitarPedal",
+          "level": "Advanced",
+          "assessment": "An advanced embedded systems project featuring custom hardware design (KiCad) and firmware development for a guitar pedal, utilizing an RP2354 microcontroller, audio codecs, and intricate UI elements."
+        },
+        {
+          "repoName": "HunspellColorize",
+          "repoUrl": "https://github.com/torvalds/HunspellColorize",
+          "level": "Intermediate",
+          "assessment": "A practical, albeit simple, command-line utility that integrates `hunspell` for real-time spelling error colorization within `git` logs, showcasing proficiency in scripting and tooling."
+        },
+        {
+          "repoName": "ScrollWheel",
+          "repoUrl": "https://github.com/torvalds/ScrollWheel",
+          "level": "Intermediate",
+          "assessment": "A minimal embedded project leveraging an RP2350 microcontroller for volume control/scrollwheel functionality, demonstrating sensor integration (AS5600), GPIO manipulation, and PIO programming for LEDs."
+        },
+        {
+          "repoName": "uemacs",
+          "repoUrl": "https://github.com/torvalds/uemacs",
+          "level": "Advanced",
+          "assessment": "A highly advanced project involving the maintenance and significant enhancement of `MicroEMACS 3.9e`, showcasing deep expertise in C programming, operating system interactions, terminal control, and building portable, performant text editor functionality."
+        }
+      ],
+      "holisticSummary": "This developer's profile showcases an exceptional breadth and depth of technical expertise, spanning core operating system development (implied by the `linux` repository), intricate embedded systems with custom hardware design (GuitarPedal, ScrollWheel), and deep low-level C programming for foundational tools (uemacs). Their projects highlight a profound understanding of computer architecture, real-time systems, hardware-software interaction, and the ability to build and maintain complex, performant, and portable software. From custom PCB designs to kernel-level contributions and text editor enhancements, the developer demonstrates versatility, meticulous attention to detail, and a rare blend of theoretical knowledge and practical implementation skills.",
+      "cached": false
+    }
   }
 }
