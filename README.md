@@ -5,17 +5,6 @@ An intelligent, dual-interface diagnostic tool (Next.js Web App & Python CLI) th
 Designed natively for high performance, featuring **Batched LLM Prompting**, **In-Memory/Local Caching**, and **Smart API Rate-Limit Handling**.
 
 ---
-# GitHub Profile Reviewer
-
-Lightweight toolset to analyze a GitHub profile using a shared Python core, a
-CLI, and a Next.js web UI. The core fetches public repositories and READMEs,
-batches prompts to an LLM, and returns per-repo assessments and a holistic
-summary. Caching and logging live under `src/cache` and `src/logs`.
-
-This README covers the updated run paths, env vars, and how we handle AI
-quota (429) responses.
-
----
 
 ## Quick setup (recommended: Poetry)
 
