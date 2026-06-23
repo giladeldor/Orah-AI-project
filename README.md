@@ -146,10 +146,4 @@ UI can show a clear message. Short-term options:
 - CLI: `src/python_cli/main.py`
 - Web action: `web-app/src/app/actions.ts` and `src/web-app/src/app/actions.ts` (dev copies).
 
-If you'd like, I can also update the README to include sample outputs or add a
-small troubleshooting script to reproduce 429s for testing.
-
 ---
-
-Happy hacking!
-
