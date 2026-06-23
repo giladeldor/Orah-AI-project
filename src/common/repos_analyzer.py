@@ -298,37 +298,3 @@ class reposAnalyzer:
 def evaluate_profile(username: str):
     analyzer = reposAnalyzer()
     return analyzer.evaluate_profile(username)
-
-# if __name__ == "__main__":
-#     import sys
-#     import argparse
-    
-#     # Silence standard logging output if we want clean JSON
-#     parser = argparse.ArgumentParser()
-#     parser.add_argument("username", help="GitHub username")
-#     parser.add_argument("--json", action="store_true", help="Output raw JSON via stdout")
-#     args = parser.parse_args()
-
-#     if args.json:
-#         # turn off stream handler so it doesn't pollute json output
-#         logger.removeHandler(stream_handler)
-
-#     try:
-#         data = evaluate_profile(args.username)
-#         if args.json:
-#             print(json.dumps(data))
-#         else:
-#             if data.get("cached"):
-#                 print(f"⚡ [CACHE HIT] Loaded results for {args.username}\n")
-#             # Standard print block
-#             for r in data["results"]:
-#                 print(f"--- {r['repoName']} ---")
-#                 print(f"Level: {r['level']}")
-#                 print(f"Assessment: {r['assessment']}\n")
-#             print("🌟 HOLISTIC SUMMARY 🌟")
-#             print(data["holisticSummary"])
-#     except Exception as e:
-#         if args.json:
-#             print(json.dumps({"error": str(e)}))
-#         else:
-#             print(f"Error: {e}")
