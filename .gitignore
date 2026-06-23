@@ -30,8 +30,6 @@ Thumbs.db
 
 # Runtime artifacts
 src/*.log
-src/.profile_cache.json
-python-cli/.profile_cache.json
 **/.profile_cache.json
 **/.profile.cache.json
 **/app.log

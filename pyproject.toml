@@ -1,47 +1,25 @@
-[tool.poetry]
-name = "github-profile-reviewer"
-version = "1.0.0"
-description = "AI-powered GitHub profile analyzer using Gemini and Octokit"
-authors = ["Your Name <you@example.com>"]
+[project]
+name = "src"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "giladeldor",email = "giladeldor@gmail.com"}
+]
 readme = "README.md"
-packages = [
-    { include = "src" },
-    { include = "python-cli" }
+requires-python = ">=3.12"
+dependencies = [
+    "requests (>=2.34.2,<3.0.0)",
+    "python-dotenv (>=1.2.2,<2.0.0)",
+    "openai (>=2.43.0,<3.0.0)",
+    "google-generativeai (>=0.8.6,<0.9.0)"
 ]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-requests = "^2.31.0"
-python-dotenv = "^1.0.0"
-google-generativeai = "^0.3.0"
-anthropic = "^0.7.0"
-openai = "^1.0.0"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.0"
-black = "^23.0.0"
-pylint = "^3.0.0"
-mypy = "^1.5.0"
-
-[tool.poetry.scripts]
-reviewer-cli = "python_cli.main:main"
+[tool.poetry]
+packages = [
+    { include = "python_cli", from = "src" },
+    { include = "common", from = "src" }
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.black]
-line-length = 100
-target-version = ['py39', 'py310', 'py311', 'py312']
-
-[tool.pylint.messages_control]
-disable = [
-    "missing-docstring",
-    "too-few-public-methods",
-]
-
-[tool.mypy]
-python_version = "3.9"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false

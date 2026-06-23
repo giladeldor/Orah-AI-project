@@ -4,7 +4,7 @@ import argparse
 
 # Inject root into python path so we can import the shared src module
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from src.ai_core import evaluate_profile
+from src.utils.ai_core import evaluate_profile
 
 def main():
     parser = argparse.ArgumentParser(description="GitHub Profile Reviewer CLI")
