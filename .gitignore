@@ -6,6 +6,12 @@ __pycache__/
 venv/
 env/
 .env
+*.egg-info/
+dist/
+build/
+
+# Poetry
+poetry.lock
 
 # Node / Next.js
 node_modules/
