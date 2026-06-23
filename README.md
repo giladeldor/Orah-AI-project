@@ -37,7 +37,7 @@ plan to migrate to `google.genai` when you provision an API key.
 ## Environment variables
 
 - `GEMINI_API_KEY` — required for AI calls (Gemini). Place in a `.env` file or
-  export in your shell.
+  export in your shell. This is the link to where you can get the api key - https://aistudio.google.com/api-keys?project=gen-lang-client-0120725481
 - `GITHUB_TOKEN` — optional but recommended to avoid GitHub rate limits.
 
 Create a `.env` with:
