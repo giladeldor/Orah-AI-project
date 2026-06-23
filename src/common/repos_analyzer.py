@@ -246,7 +246,28 @@ class reposAnalyzer:
             ai_results = self._analyze_repositories_in_batches(model, repo_readmes)
             holistic_summary = self._generate_holistic_summary(model, ai_results)
         except Exception as e:
+            # If the underlying exception indicates a quota/429 error, return a structured
+            # error payload instead of raising so callers (CLI/web) can surface a friendly message.
             logger.error(f"AI evaluation failed: {e}")
+            err_str = str(e)
+            import re
+            retry_after = None
+            m = re.search(r"Please retry in ([\d\.]+)s", err_str)
+            if m:
+                try:
+                    retry_after = float(m.group(1))
+                except Exception:
+                    retry_after = None
+
+            if "429" in err_str or "quota" in err_str.lower() or retry_after is not None:
+                return {
+                    "error": "AI quota exceeded",
+                    "message": err_str,
+                    "code": 429,
+                    "retry_after": retry_after,
+                }
+
+            # Non-quota errors: re-raise as before so they surface as exceptions
             raise ValueError(f"AI evaluation failed: {e}")
 
         # 6. Map results
